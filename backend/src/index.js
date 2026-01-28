@@ -12,16 +12,17 @@ const app = express();
 const PORT = process.env.PORT || 5001
 
 // Middleware to parse JSON request bodies
-app.use(express.json());
+app.use(express.json({ limit: "5mb" }));
 
 // Middleware to parse cookies
 app.use(cookieParser());
 
 // Enable CORS
 app.use(cors({
-    origin: 'http://localhost:5173', // frontend URL
-    credentials: true // allow cookies to be sent
+    origin: "http://localhost:5173", // frontend origin
+    credentials: true, // allow cookies to be sent
 }));
+
 
 // auth routes
 app.use("/api/auth", authRoutes)
