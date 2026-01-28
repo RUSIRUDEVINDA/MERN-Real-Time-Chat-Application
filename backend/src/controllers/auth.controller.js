@@ -39,7 +39,8 @@ const signup = async (req, res) => {
                 _id: newUser._id,
                 email: newUser.email,
                 fullname: newUser.fullname,
-                profilepic: newUser.profilePic
+                profilePic: newUser.profilePic,
+                createdAt: newUser.createdAt,
             })
 
         }
@@ -68,7 +69,8 @@ const login = async (req, res) => {
             _id: user._id,
             email: user.email,
             fullname: user.fullname,
-            profilepic: user.profilePic
+            profilePic: user.profilePic,
+            createdAt: user.createdAt,
         })
 
     } catch (error) {
@@ -79,10 +81,10 @@ const login = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    try{
-        res.cookie('jwt', '', {maxAge: 0}); // set cookie to expire immediately
-        res.status(200).json({message: "Logged out successfully"})
-    }catch(error){
+    try {
+        res.cookie('jwt', '', { maxAge: 0 }); // set cookie to expire immediately
+        res.status(200).json({ message: "Logged out successfully" })
+    } catch (error) {
         console.error("error in logout controller", error.message)
         res.status(500).json({ message: "Internal server error" })
     }
@@ -90,37 +92,37 @@ const logout = (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-    try{
-        const {profilePic} = req.body;
+    try {
+        const { profilePic } = req.body;
         const userId = req.user._id;
 
-        if(!profilePic){
-            return res.status(400).json({message: "Profile picture is required"});
+        if (!profilePic) {
+            return res.status(400).json({ message: "Profile picture is required" });
         }
 
         const updateResponse = await cloudinary.uploader.upload(profilePic)
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            {profilePic: updateResponse.secure_url},
-            {new: true}
+            { profilePic: updateResponse.secure_url },
+            { new: true }
         )
 
         res.status(200).json(updatedUser)
-    }catch(error){
+    } catch (error) {
         console.log("error in update profile controller", error.message)
-        res.status(500).json({message: "Internal server error"});
+        res.status(500).json({ message: "Internal server error" });
     }
 
 }
 
 const checkAuth = async (req, res) => {
-        try{
-            res.status(200).json(req.user)
-        }catch(error){
-            console.log("error in check auth controller", error.message)
-            res.status(500).json({message: "Internal server error"});
-        }
+    try {
+        res.status(200).json(req.user)
+    } catch (error) {
+        console.log("error in check auth controller", error.message)
+        res.status(500).json({ message: "Internal server error" });
     }
+}
 
 export { signup, login, logout, updateProfile, checkAuth };
 
