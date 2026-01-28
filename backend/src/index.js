@@ -4,6 +4,7 @@ import authRoutes from './routes/auth.route.js'
 import cookieParser from "cookie-parser";
 import { protectRoute } from './middlewares/auth.middleware.js';
 import { connectDB } from './lib/db.js';
+import cors from 'cors';
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -15,6 +16,12 @@ app.use(express.json());
 
 // Middleware to parse cookies
 app.use(cookieParser());
+
+// Enable CORS
+app.use(cors({
+    origin: 'http://localhost:5173', // frontend URL
+    credentials: true // allow cookies to be sent
+}));
 
 // auth routes
 app.use("/api/auth", authRoutes)
